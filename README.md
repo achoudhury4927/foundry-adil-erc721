@@ -118,11 +118,10 @@ You will need foundry to install the packages and run tests. You can find out mo
 
 ## Roadmap
 
+- [x] ERC7211 Contract
+  - [x] Storage on IPFS
 - [ ] ERC7211 Contract
-  - [ ] Storage Off-Chain
-  - [ ] Tests
-- [ ] ERC7211 Contract
-  - [ ] Storange on IPFS
+  - [ ] Storage on-chain
   - [ ] Tests
 
 See the [open issues](https://github.com/achoudhury4927/foundry-adil-erc721/issues) for a full list of proposed features (and known issues).
