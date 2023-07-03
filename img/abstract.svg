@@ -1,0 +1,8 @@
+<svg id="0" viewBox="0 0 540 960" width="540" height="960" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">
+	<g stroke-width="1" stroke-linejoin="bevel">
+		<path d="M0 425L540 0L0 0Z" fill="#297ea6" stroke="#297ea6"></path>
+		<path d="M0 0L0 538L540 0Z" fill="#256a8d" stroke="#256a8d"></path>
+		<path d="M0 538L540 960L540 0Z" fill="#00101c" stroke="#00101c"></path>
+		<path d="M0 960L540 960L0 0Z" fill="#0b2130" stroke="#0b2130"></path>
+	</g>
+</svg>
