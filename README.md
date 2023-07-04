@@ -10,10 +10,10 @@
 <br />
 <div align="center">
 
-<h3 align="center">Foundry NFT ERC721</h3>
+<h3 align="center">Abstract NFT ERC721</h3>
 
   <p align="center">
-    A smart contract implementing the ERC721 standard.
+    A smart contract implementing the ERC721 standard. A basic NFT using OZ library with storage on IPFS. A more complex Abstract NFT using svg to create the image that can be stored on chain and changed to a more detailed version after fulfilling certain criteria.
     <br />
     <a href="https://github.com/achoudhury4927/foundry-adil-erc721"><strong>Explore the docs »</strong></a>
     <br />
@@ -118,10 +118,11 @@ You will need foundry to install the packages and run tests. You can find out mo
 
 ## Roadmap
 
-- [x] ERC7211 Contract
+- [x] Basic NFT ERC7211 Contract
   - [x] Storage on IPFS
-- [ ] ERC7211 Contract
-  - [ ] Storage on-chain
+- [ ] Abstract NFT ERC7211 Contract
+  - [x] Storage on-chain
+  - [ ] Token URI changes on transaction call
   - [ ] Tests
 
 See the [open issues](https://github.com/achoudhury4927/foundry-adil-erc721/issues) for a full list of proposed features (and known issues).

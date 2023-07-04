@@ -18,14 +18,14 @@ contract BasicNFTTest is Test {
         basicNFT = deployer.run();
     }
 
-    function test_NameIsCorrect() public {
+    function test_NameIsCorrect() private {
         string memory expectedName = "Dogie";
         string memory actualName = basicNFT.name();
         //assert(keccak256(abi.encodePacked(expectedName)) == keccak256(abi.encodePacked(actualName)))
         assertEq(expectedName, actualName);
     }
 
-    function test_CanMintAndHaveABalance() public {
+    function test_CanMintAndHaveABalance() private {
         vm.prank(user);
         basicNFT.mintNft(PUG_URI);
 
