@@ -6,6 +6,9 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 contract AbstractNft is ERC721 {
+    error AbstractNft_CantFlipStateIfNotOwner();
+    error AbstractNft_NotEnoughTimeHasPassedToFlipState();
+
     uint256 private s_tokenCounter;
     string private s_abstractSvgImageUri;
     string private s_crazyAbstractSvgImageUri;
@@ -16,6 +19,7 @@ contract AbstractNft is ERC721 {
     }
 
     mapping(uint256 => NftState) s_tokenIdToState;
+    mapping(uint256 => uint256) s_tokenIdToTimestamp;
 
     constructor(
         string memory abstractSvgImageUri,
@@ -29,7 +33,28 @@ contract AbstractNft is ERC721 {
     function mintNft() public {
         _safeMint(msg.sender, s_tokenCounter);
         s_tokenIdToState[s_tokenCounter] = NftState.ABSTRACT;
+        s_tokenIdToTimestamp[s_tokenCounter] = block.timestamp;
         s_tokenCounter++;
+    }
+
+    function delayConstant() public pure returns (uint256) {
+        return 72000;
+    }
+
+    function flipState(uint256 tokenId) public {
+        if (!_isApprovedOrOwner(msg.sender, tokenId)) {
+            revert AbstractNft_CantFlipStateIfNotOwner();
+        }
+        if (
+            block.timestamp < (s_tokenIdToTimestamp[tokenId] + delayConstant())
+        ) {
+            revert AbstractNft_NotEnoughTimeHasPassedToFlipState();
+        }
+        if (s_tokenIdToState[tokenId] == NftState.ABSTRACT) {
+            s_tokenIdToState[tokenId] = NftState.CRAZY;
+        } else {
+            s_tokenIdToState[tokenId] = NftState.ABSTRACT;
+        }
     }
 
     function _baseURI() internal pure override returns (string memory) {
