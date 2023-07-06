@@ -30,6 +30,29 @@ contract AbstractNft is ERC721 {
         s_crazyAbstractSvgImageUri = crazyAbstractSvgImageUri;
     }
 
+    //Kept for tests, will be removed before deployment
+    function getTokenCounter() public view returns (uint256) {
+        return s_tokenCounter;
+    }
+
+    //Kept for tests, will be removed before deployment
+    function getAbstractSvgImageUri() public view returns (string memory) {
+        return s_abstractSvgImageUri;
+    }
+
+    //Kept for tests, will be removed before deployment
+    function getCrazyAbstractSvgImageUri() public view returns (string memory) {
+        return s_crazyAbstractSvgImageUri;
+    }
+
+    function getTimestamp(uint256 tokenId) public view returns (uint256) {
+        return s_tokenIdToTimestamp[tokenId];
+    }
+
+    function getState(uint256 tokenId) public view returns (NftState) {
+        return s_tokenIdToState[tokenId];
+    }
+
     function mintNft() public {
         _safeMint(msg.sender, s_tokenCounter);
         s_tokenIdToState[s_tokenCounter] = NftState.ABSTRACT;
