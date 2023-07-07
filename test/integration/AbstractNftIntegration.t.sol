@@ -66,4 +66,8 @@ contract AbstractNftIntegrationTest is Test {
         abstractNft.mintNft();
         assertEq(1, abstractNft.getTokenCounter());
     }
+
+    function test_DelayConstant_Returns72000() public {
+        assertEq(72000, abstractNft.delayConstant());
+    }
 }
