@@ -6,8 +6,8 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 contract AbstractNft is ERC721 {
-    error AbstractNft_CantFlipStateIfNotOwner();
-    error AbstractNft_NotEnoughTimeHasPassedToFlipState();
+    error AbstractNft__CantFlipStateIfNotOwner();
+    error AbstractNft__NotEnoughTimeHasPassedToFlipState();
 
     uint256 private s_tokenCounter;
     string private s_abstractSvgImageUri;
@@ -66,12 +66,12 @@ contract AbstractNft is ERC721 {
 
     function flipState(uint256 tokenId) public {
         if (!_isApprovedOrOwner(msg.sender, tokenId)) {
-            revert AbstractNft_CantFlipStateIfNotOwner();
+            revert AbstractNft__CantFlipStateIfNotOwner();
         }
         if (
             block.timestamp < (s_tokenIdToTimestamp[tokenId] + delayConstant())
         ) {
-            revert AbstractNft_NotEnoughTimeHasPassedToFlipState();
+            revert AbstractNft__NotEnoughTimeHasPassedToFlipState();
         }
         if (s_tokenIdToState[tokenId] == NftState.ABSTRACT) {
             s_tokenIdToState[tokenId] = NftState.CRAZY;

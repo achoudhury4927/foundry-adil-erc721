@@ -122,7 +122,7 @@ You will need foundry to install the packages and run tests. You can find out mo
   - [x] Storage on IPFS
 - [ ] Abstract NFT ERC7211 Contract
   - [x] Storage on-chain
-  - [ ] Token URI changes on transaction call
+  - [x] Token URI changes on transaction call
   - [ ] Tests
 
 See the [open issues](https://github.com/achoudhury4927/foundry-adil-erc721/issues) for a full list of proposed features (and known issues).
