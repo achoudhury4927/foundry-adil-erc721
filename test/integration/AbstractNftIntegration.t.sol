@@ -26,18 +26,18 @@ contract AbstractNftIntegrationTest is Test {
         vm.startPrank(user);
     }
 
-    function test_Constructor_TokenCounterSetCorrectly() public {
+    function test_Constructor_TokenCounterSetCorrectly() private {
         assertEq(0, abstractNft.getTokenCounter());
     }
 
-    function test_Constructor_AbstractSvgImageUriSetCorrectly() public {
+    function test_Constructor_AbstractSvgImageUriSetCorrectly() private {
         assertEq(
             keccak256(abi.encodePacked(ABSTRACT_IMAGE_URI_FROM_FILE)),
             keccak256(abi.encodePacked(abstractNft.getAbstractSvgImageUri()))
         );
     }
 
-    function test_Constructor_CrazyAbstractSvgImageUriSetCorrectly() public {
+    function test_Constructor_CrazyAbstractSvgImageUriSetCorrectly() private {
         assertEq(
             keccak256(abi.encodePacked(CRAZY_ABSTRACT_IMAGE_URI_FROM_FILE)),
             keccak256(
@@ -46,33 +46,33 @@ contract AbstractNftIntegrationTest is Test {
         );
     }
 
-    function test_MintNft_CanMintToken() public {
+    function test_MintNft_CanMintToken() private {
         abstractNft.mintNft();
         assertEq(1, abstractNft.balanceOf(user));
         assertEq(user, abstractNft.ownerOf(0));
     }
 
-    function test_MintNft_StateIsAbstractAfterMint() public {
+    function test_MintNft_StateIsAbstractAfterMint() private {
         abstractNft.mintNft();
         assertEq(0, uint(abstractNft.getState(0)));
     }
 
-    function test_MintNft_TimestampIsStoredAfterMint() public {
+    function test_MintNft_BlockIsStoredAfterMint() private {
         skip(3600);
         abstractNft.mintNft();
-        assertEq(3601, abstractNft.getTimestamp(0));
+        assertEq(3601, abstractNft.getBlock(0));
     }
 
-    function test_MintNft_TokenCounterIncrementsAfterMint() public {
+    function test_MintNft_TokenCounterIncrementsAfterMint() private {
         abstractNft.mintNft();
         assertEq(1, abstractNft.getTokenCounter());
     }
 
-    function test_DelayConstant_Returns72000() public {
+    function test_DelayConstant_Returns72000() private {
         assertEq(72000, abstractNft.delayConstant());
     }
 
-    function test_FlipState_RevertIf_NotOwner() public {
+    function test_FlipState_RevertIf_NotOwner() private {
         abstractNft.mintNft();
         vm.prank(address(10));
         vm.expectRevert(
@@ -82,7 +82,7 @@ contract AbstractNftIntegrationTest is Test {
     }
 
     function test_FlipState_RevertIf_NotEnoughTimeHasPassedToFlipState()
-        public
+        private
     {
         abstractNft.mintNft();
         vm.expectRevert(
@@ -91,14 +91,14 @@ contract AbstractNftIntegrationTest is Test {
         abstractNft.flipState(0);
     }
 
-    function test_FlipState_CanFlipState() public {
+    function test_FlipState_CanFlipState() private {
         abstractNft.mintNft();
         skip(72000);
         abstractNft.flipState(0);
         assertEq(0, uint(abstractNft.getState(1)));
     }
 
-    function test_FlipState_CanFlipStateMultipleTimesAfterTimePasses() public {
+    function test_FlipState_CanFlipStateMultipleTimesAfterTimePasses() private {
         abstractNft.mintNft();
         skip(72000);
         abstractNft.flipState(0);
@@ -107,7 +107,7 @@ contract AbstractNftIntegrationTest is Test {
         assertEq(0, uint(abstractNft.getState(0)));
     }
 
-    function test_TokenUri_ReturnsAbstracSvgTokenUri() public {
+    function test_TokenUri_ReturnsAbstracSvgTokenUri() private {
         abstractNft.mintNft();
         assertEq(
             keccak256(abi.encodePacked(ABSTRACT_TOKEN_URI_FROM_FILE)),
@@ -115,7 +115,7 @@ contract AbstractNftIntegrationTest is Test {
         );
     }
 
-    function test_TokenUri_ReturnsCrazyAbstracSvgTokenUri() public {
+    function test_TokenUri_ReturnsCrazyAbstracSvgTokenUri() private {
         abstractNft.mintNft();
         skip(72000);
         abstractNft.flipState(0);

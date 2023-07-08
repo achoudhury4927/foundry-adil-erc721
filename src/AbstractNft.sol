@@ -19,7 +19,7 @@ contract AbstractNft is ERC721 {
     }
 
     mapping(uint256 => NftState) s_tokenIdToState;
-    mapping(uint256 => uint256) s_tokenIdToTimestamp;
+    mapping(uint256 => uint256) s_tokenIdToBlock;
 
     constructor(
         string memory abstractSvgImageUri,
@@ -30,23 +30,20 @@ contract AbstractNft is ERC721 {
         s_crazyAbstractSvgImageUri = crazyAbstractSvgImageUri;
     }
 
-    //Kept for tests, will be removed before deployment
     function getTokenCounter() public view returns (uint256) {
         return s_tokenCounter;
     }
 
-    //Kept for tests, will be removed before deployment
     function getAbstractSvgImageUri() public view returns (string memory) {
         return s_abstractSvgImageUri;
     }
 
-    //Kept for tests, will be removed before deployment
     function getCrazyAbstractSvgImageUri() public view returns (string memory) {
         return s_crazyAbstractSvgImageUri;
     }
 
-    function getTimestamp(uint256 tokenId) public view returns (uint256) {
-        return s_tokenIdToTimestamp[tokenId];
+    function getBlock(uint256 tokenId) public view returns (uint256) {
+        return s_tokenIdToBlock[tokenId];
     }
 
     function getState(uint256 tokenId) public view returns (NftState) {
@@ -56,7 +53,7 @@ contract AbstractNft is ERC721 {
     function mintNft() public {
         _safeMint(msg.sender, s_tokenCounter);
         s_tokenIdToState[s_tokenCounter] = NftState.ABSTRACT;
-        s_tokenIdToTimestamp[s_tokenCounter] = block.timestamp;
+        s_tokenIdToBlock[s_tokenCounter] = block.timestamp;
         s_tokenCounter++;
     }
 
@@ -64,13 +61,18 @@ contract AbstractNft is ERC721 {
         return 72000;
     }
 
+    /**
+     * @notice This function flips the NftState if the following validations have passed
+     * 1. The msg.sender is approved to interact with the NFT
+     * 2. Over 72000 blocks have passed since the mint
+     * @param tokenId The tokenId of the NFT. This is set by the value of s_tokenCounter during mintNft()
+     *
+     */
     function flipState(uint256 tokenId) public {
         if (!_isApprovedOrOwner(msg.sender, tokenId)) {
             revert AbstractNft__CantFlipStateIfNotOwner();
         }
-        if (
-            block.timestamp < (s_tokenIdToTimestamp[tokenId] + delayConstant())
-        ) {
+        if (block.number < (s_tokenIdToBlock[tokenId] + delayConstant())) {
             revert AbstractNft__NotEnoughTimeHasPassedToFlipState();
         }
         if (s_tokenIdToState[tokenId] == NftState.ABSTRACT) {
