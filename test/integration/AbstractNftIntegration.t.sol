@@ -57,15 +57,31 @@ contract AbstractNftIntegrationTest is Test {
         assertEq(0, uint(abstractNft.getState(0)));
     }
 
-    function test_MintNft_BlockIsStoredAfterMint() private {
+    function test_MintNft_TimestampIsStoredAfterMint() private {
         skip(3600);
         abstractNft.mintNft();
-        assertEq(3601, abstractNft.getBlock(0));
+        assertEq(3601, abstractNft.getTimestamp(0));
     }
 
     function test_MintNft_TokenCounterIncrementsAfterMint() private {
         abstractNft.mintNft();
         assertEq(1, abstractNft.getTokenCounter());
+    }
+
+    function test_BurnNft_CanBurnToken() private {
+        abstractNft.mintNft();
+        abstractNft.burnNft(0);
+        assertEq(2, uint(abstractNft.getState(0)));
+        assertEq(0, abstractNft.getTimestamp(0));
+    }
+
+    function test_BurnNft_OnlyApprovedOrOwnerCanBurn() private {
+        abstractNft.mintNft();
+        vm.startPrank(address(10));
+        vm.expectRevert(
+            AbstractNft.AbstractNft__CantFlipStateIfNotOwner.selector
+        );
+        abstractNft.burnNft(0);
     }
 
     function test_DelayConstant_Returns72000() private {
@@ -78,6 +94,13 @@ contract AbstractNftIntegrationTest is Test {
         vm.expectRevert(
             AbstractNft.AbstractNft__CantFlipStateIfNotOwner.selector
         );
+        abstractNft.flipState(0);
+    }
+
+    function test_FlipState_RevertIf_NftStateIsBurned() private {
+        abstractNft.mintNft();
+        abstractNft.burnNft(0);
+        vm.expectRevert("ERC721: invalid token ID");
         abstractNft.flipState(0);
     }
 
@@ -111,7 +134,7 @@ contract AbstractNftIntegrationTest is Test {
         abstractNft.mintNft();
         assertEq(
             keccak256(abi.encodePacked(ABSTRACT_TOKEN_URI_FROM_FILE)),
-            keccak256(abi.encodePacked(abstractNft.getAbstractSvgImageUri()))
+            keccak256(abi.encodePacked(abstractNft.tokenURI(0)))
         );
     }
 
@@ -121,7 +144,7 @@ contract AbstractNftIntegrationTest is Test {
         abstractNft.flipState(0);
         assertEq(
             keccak256(abi.encodePacked(CRAZY_ABSTRACT_TOKEN_URI_FROM_FILE)),
-            keccak256(abi.encodePacked(abstractNft.getAbstractSvgImageUri()))
+            keccak256(abi.encodePacked(abstractNft.tokenURI(0)))
         );
     }
 }

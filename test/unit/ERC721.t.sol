@@ -31,11 +31,11 @@ contract ERC721Test is Test {
     }
 
     function test_NameSetCorrectly() public {
-        assertEq("Abstract NFT", abstractNft.name());
+        assertEq("Abstract NFT", abstractNft.name(), "Has name Abstract NFT");
     }
 
     function test_SymbolSetCorrectly() public {
-        assertEq("ABS", abstractNft.symbol());
+        assertEq("ABS", abstractNft.symbol(), "Has symbol ABS");
     }
 
     /**
@@ -57,5 +57,37 @@ contract ERC721Test is Test {
      */
     function test_DoesNotSupportInterfaceERC1155() public {
         assertEq(false, abstractNft.supportsInterface(bytes4(0xd9b67a26)));
+    }
+
+    function test_BalanceOf_RevertIf_ZeroAddress() public {
+        vm.expectRevert("ERC721: address zero is not a valid owner");
+        abstractNft.balanceOf(address(0));
+    }
+
+    function test_BalanceOf_ReturnsOne() public {
+        abstractNft.mintNft();
+        assertEq(abstractNft.balanceOf(user), 1);
+    }
+
+    function test_BalanceOf_ReturnsTwo() public {
+        abstractNft.mintNft();
+        abstractNft.mintNft();
+        assertEq(abstractNft.balanceOf(user), 2);
+    }
+
+    function test_BalanceOf_ReturnsZero() public {
+        assertEq(abstractNft.balanceOf(user), 0);
+    }
+
+    function test_OwnerOf_RevertIf_TokenIsBurnt() public {
+        abstractNft.mintNft();
+        abstractNft.burnNft(0);
+        vm.expectRevert("ERC721: invalid token ID");
+        abstractNft.ownerOf(0);
+    }
+
+    function test_OwnerOf_ReturnsOwner() public {
+        abstractNft.mintNft();
+        assertEq(user, abstractNft.ownerOf(0));
     }
 }
