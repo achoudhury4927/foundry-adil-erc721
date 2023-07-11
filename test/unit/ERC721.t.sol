@@ -90,4 +90,56 @@ contract ERC721Test is Test {
         abstractNft.mintNft();
         assertEq(user, abstractNft.ownerOf(0));
     }
+
+    function test_Approve_RevertWhen_CurrentOwnerCallsApprove() public {
+        abstractNft.mintNft();
+        vm.expectRevert("ERC721: approval to current owner");
+        abstractNft.approve(user, 0);
+    }
+
+    function test_Approve_RevertIf_NonOwnerOrUnapprovedCallsApprove() public {
+        abstractNft.mintNft();
+        vm.prank(address(10));
+        vm.expectRevert(
+            "ERC721: approve caller is not token owner or approved for all"
+        );
+        abstractNft.approve(address(9), 0);
+    }
+
+    function test_Approve_OwnerCanApprove() public {
+        abstractNft.mintNft();
+        abstractNft.approve(address(9), 0);
+        assertEq(true, abstractNft.checkApproved(address(9), 0));
+    }
+
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint256 indexed tokenId
+    );
+
+    function test_Approve_EmitsEventWhenApproved() public {
+        abstractNft.mintNft();
+        vm.expectEmit(true, true, true, true);
+        emit Approval(user, address(9), 0);
+        abstractNft.approve(address(9), 0);
+    }
+
+    function test_Approve_ApprovedForAllCanApprove() public {
+        abstractNft.mintNft();
+        abstractNft.setApprovalForAll(address(9), true);
+        vm.prank(address(9));
+        abstractNft.approve(address(10), 0);
+        assertEq(true, abstractNft.checkApproved(address(10), 0));
+    }
+
+    function test_Approve_RevertIf_ApprovedCallsApprove() public {
+        abstractNft.mintNft();
+        abstractNft.approve(address(9), 0);
+        vm.prank(address(9));
+        vm.expectRevert(
+            "ERC721: approve caller is not token owner or approved for all"
+        );
+        abstractNft.approve(address(10), 0);
+    }
 }

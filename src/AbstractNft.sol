@@ -52,6 +52,13 @@ contract AbstractNft is ERC721 {
         return s_tokenIdToState[tokenId];
     }
 
+    function checkApproved(
+        address addressToCheck,
+        uint256 tokenId
+    ) public view returns (bool) {
+        return _isApprovedOrOwner(addressToCheck, tokenId);
+    }
+
     function mintNft() public {
         _safeMint(msg.sender, s_tokenCounter);
         s_tokenIdToState[s_tokenCounter] = NftState.ABSTRACT;

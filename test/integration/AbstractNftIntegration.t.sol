@@ -147,4 +147,26 @@ contract AbstractNftIntegrationTest is Test {
             keccak256(abi.encodePacked(abstractNft.tokenURI(0)))
         );
     }
+
+    function test_CheckApproved_TrueWhenOwner() public {
+        abstractNft.mintNft();
+        assertEq(true, abstractNft.checkApproved(user, 0));
+    }
+
+    function test_CheckApproved_TrueWhenApproved() public {
+        abstractNft.mintNft();
+        abstractNft.approve(address(9), 0);
+        assertEq(true, abstractNft.checkApproved(address(9), 0));
+    }
+
+    function test_CheckApproved_TrueWhenApprovedForAll() public {
+        abstractNft.mintNft();
+        abstractNft.setApprovalForAll(address(9), true);
+        assertEq(true, abstractNft.checkApproved(address(9), 0));
+    }
+
+    function test_CheckApproved_FalseWhenNonOwnerAndNotAproved() public {
+        abstractNft.mintNft();
+        assertEq(false, abstractNft.checkApproved(address(9), 0));
+    }
 }
