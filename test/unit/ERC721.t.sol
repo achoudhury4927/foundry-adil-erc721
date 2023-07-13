@@ -262,4 +262,11 @@ contract ERC721Test is Test {
             "isApprovedForAll returns true for charlie as set"
         );
     }
+
+    function test_TransferFrom_RevertsIf_NotApprovedOrOwner() public {
+        abstractNft.mintNft();
+        vm.expectRevert("ERC721: caller is not token owner or approved");
+        vm.prank(mallory);
+        abstractNft.transferFrom(alice, bob, 0);
+    }
 }
