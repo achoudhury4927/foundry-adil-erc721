@@ -20,6 +20,11 @@ contract ERC721Test is Test {
         address indexed approved,
         uint256 indexed tokenId
     );
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
     AbstractNft abstractNft;
     address alice = makeAddr("alice");
@@ -267,6 +272,50 @@ contract ERC721Test is Test {
         abstractNft.mintNft();
         vm.expectRevert("ERC721: caller is not token owner or approved");
         vm.prank(mallory);
+        abstractNft.transferFrom(alice, bob, 0);
+    }
+
+    function test_TransferFrom_RevertsIf_IncorrectTokenOwner() public {
+        abstractNft.mintNft();
+        abstractNft.setApprovalForAll(bob, true);
+        vm.prank(bob);
+        vm.expectRevert("ERC721: transfer from incorrect owner");
+        abstractNft.transferFrom(bob, alice, 0);
+    }
+
+    function test_TransferFrom_RevertsIf_ToAddressIsZeroAddress() public {
+        abstractNft.mintNft();
+        vm.expectRevert("ERC721: transfer to the zero address");
+        abstractNft.transferFrom(alice, address(0), 0);
+    }
+
+    function test_TransferFrom_TokenApprovalsAreDeletedAfterTransfer() public {
+        abstractNft.mintNft();
+        abstractNft.approve(bob, 0);
+        abstractNft.transferFrom(alice, charlie, 0);
+        assertNotEq(bob, abstractNft.getApproved(0));
+    }
+
+    function test_TransferFrom_BalancesAreUpdatedAfterTransfer() public {
+        abstractNft.mintNft();
+        assertEq(1, abstractNft.balanceOf(alice));
+        assertEq(0, abstractNft.balanceOf(bob));
+        abstractNft.transferFrom(alice, bob, 0);
+        assertEq(0, abstractNft.balanceOf(alice));
+        assertEq(1, abstractNft.balanceOf(bob));
+    }
+
+    function test_TransferFrom_OwnerIsUpdatedAfterTransfer() public {
+        abstractNft.mintNft();
+        assertEq(alice, abstractNft.ownerOf(0));
+        abstractNft.transferFrom(alice, bob, 0);
+        assertEq(bob, abstractNft.ownerOf(0));
+    }
+
+    function test_TransferFrom_EmitsTransferEvent() public {
+        abstractNft.mintNft();
+        vm.expectEmit(true, true, true, true);
+        emit Transfer(alice, bob, 0);
         abstractNft.transferFrom(alice, bob, 0);
     }
 }
