@@ -8,6 +8,8 @@ pragma solidity ^0.8.20;
 
 import {Test, console} from "forge-std/Test.sol";
 import {AbstractNft} from "../../src/AbstractNft.sol";
+import {Helper} from "./Helper.sol";
+import {Helper2} from "./Helper2.sol";
 
 contract ERC721Test is Test {
     event ApprovalForAll(
@@ -27,6 +29,8 @@ contract ERC721Test is Test {
     );
 
     AbstractNft abstractNft;
+    Helper helper;
+    Helper2 helper2;
     address alice = makeAddr("alice");
     address bob = makeAddr("bob");
     address charlie = makeAddr("charlie");
@@ -46,6 +50,8 @@ contract ERC721Test is Test {
             ABSTRACT_IMAGE_URI_FROM_FILE,
             CRAZY_ABSTRACT_IMAGE_URI_FROM_FILE
         );
+        helper = new Helper(1);
+        helper2 = new Helper2(1);
         vm.startPrank(alice);
     }
 
@@ -317,5 +323,39 @@ contract ERC721Test is Test {
         vm.expectEmit(true, true, true, true);
         emit Transfer(alice, bob, 0);
         abstractNft.transferFrom(alice, bob, 0);
+    }
+
+    //Only testing safeTransferFrom _checkOnERC721Received call
+    //as rest of the code is the same as transfer from
+
+    /** 
+     * Below is from Helper 2
+     * function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) external returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
+
+        //return bytes4("no") or no return value would make the below test fail
+        //test_SafeTransferFrom_DoesNotRevertOnImplementer()
+
+        //return bytes4("no") will trigger the assembly code
+        //then the revert message will come from _safeTransfer
+
+        //no return value will revert with the message before the assembley code
+    }
+    */
+
+    function test_SafeTransferFrom_RevertsIf_TransferToNonImplmenter() public {
+        abstractNft.mintNft();
+        vm.expectRevert("ERC721: transfer to non ERC721Receiver implementer");
+        abstractNft.safeTransferFrom(alice, address(helper), 0);
+    }
+
+    function test_SafeTransferFrom_DoesNotRevertOnImplementer() public {
+        abstractNft.mintNft();
+        abstractNft.safeTransferFrom(alice, address(helper2), 0);
     }
 }
