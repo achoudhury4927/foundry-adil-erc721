@@ -358,4 +358,42 @@ contract ERC721Test is Test {
         abstractNft.mintNft();
         abstractNft.safeTransferFrom(alice, address(helper2), 0);
     }
+
+    //Only testing _exists revert, mapping updates and emit for mint.
+    //Already tested ERC721 receiver implementation from safeMint in the SafeTransferFrom tests
+    function test_Mint_RevertIf_TokenAlreadyExists() public {
+        abstractNft.mintNft();
+        vm.expectRevert("ERC721: token already minted");
+        abstractNft.mintNft(address(helper2), 0);
+    }
+
+    function test_Mint_UpdatesMappings() public {
+        abstractNft.mintNft();
+        assertEq(alice, abstractNft.ownerOf(0));
+        assertEq(1, abstractNft.balanceOf(alice));
+    }
+
+    function test_Mint_EmitsTransferEvent() public {
+        vm.expectEmit(true, true, true, true);
+        emit Transfer(address(0), alice, 0);
+        abstractNft.mintNft();
+    }
+
+    //Only testing mapping updates and emit for burn
+    function test_Burn_UpdatesMappings() public {
+        abstractNft.mintNft();
+        abstractNft.approve(bob, 0);
+        assertEq(bob, abstractNft.getApproved(0));
+        abstractNft.burnNft(0);
+        //assertEq(address(0), abstractNft.getApproved(0)); returns invalid tokenId
+        //assertEq(address(0), abstractNft.ownerOf(0)); returns invalid tokenId
+        assertEq(0, abstractNft.balanceOf(alice));
+    }
+
+    function test_Burn_EmitsTransferEvent() public {
+        abstractNft.mintNft();
+        vm.expectEmit(true, true, true, true);
+        emit Transfer(alice, address(0), 0);
+        abstractNft.burnNft(0);
+    }
 }
