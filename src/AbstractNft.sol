@@ -66,14 +66,6 @@ contract AbstractNft is ERC721 {
         s_tokenCounter++;
     }
 
-    //Only for testing purposes
-    function mintNft(address to, uint256 tokenId) public {
-        _safeMint(to, tokenId);
-        s_tokenIdToState[s_tokenCounter] = NftState.ABSTRACT;
-        s_tokenIdToTimestamp[s_tokenCounter] = block.timestamp;
-        s_tokenCounter++;
-    }
-
     function burnNft(uint256 tokenId) public {
         if (!_isApprovedOrOwner(msg.sender, tokenId)) {
             revert AbstractNft__CantFlipStateIfNotOwner();
@@ -99,11 +91,6 @@ contract AbstractNft is ERC721 {
         if (!_isApprovedOrOwner(msg.sender, tokenId)) {
             revert AbstractNft__CantFlipStateIfNotOwner();
         }
-        /* Redundant check see 1.1
-            if (s_tokenIdToState[tokenId] == NftState.BURNED) {
-            revert AbstractNft__CantFlipStateIfNftBurned();
-            } 
-        */
         if (
             block.timestamp < (s_tokenIdToTimestamp[tokenId] + delayConstant())
         ) {

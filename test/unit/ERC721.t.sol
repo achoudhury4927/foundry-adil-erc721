@@ -361,11 +361,12 @@ contract ERC721Test is Test {
 
     //Only testing _exists revert, mapping updates and emit for mint.
     //Already tested ERC721 receiver implementation from safeMint in the SafeTransferFrom tests
-    function test_Mint_RevertIf_TokenAlreadyExists() public {
-        abstractNft.mintNft();
-        vm.expectRevert("ERC721: token already minted");
-        abstractNft.mintNft(address(helper2), 0);
-    }
+    //Commented out as as mintNft(address,uint256) function removed from contract for deployment
+    // function test_Mint_RevertIf_TokenAlreadyExists() public {
+    //     abstractNft.mintNft();
+    //     vm.expectRevert("ERC721: token already minted");
+    //     abstractNft.mintNft(address(helper2), 0);
+    // }
 
     function test_Mint_UpdatesMappings() public {
         abstractNft.mintNft();

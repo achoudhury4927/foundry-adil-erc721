@@ -13,7 +13,7 @@
 <h3 align="center">Abstract NFT ERC721</h3>
 
   <p align="center">
-    A smart contract implementing the ERC721 standard. A basic NFT using OZ library with storage on IPFS. A more complex Abstract NFT using svg to create the image that can be stored on chain and changed to a more detailed version after fulfilling certain criteria.
+    A smart contract implementing the ERC721 standard. A basic NFT using OZ library with storage on IPFS. A more complex Abstract NFT using svg to create the image that can be stored on chain and changed to a more detailed version after fulfilling certain criteria. Deployed on Base Goerli.
     <br />
     <a href="https://github.com/achoudhury4927/foundry-adil-erc721"><strong>Explore the docs »</strong></a>
     <br />
@@ -55,7 +55,8 @@
 
 ## About The Project
 
-A smart contract created with solidity that implemented the ERC20 token standards.
+A smart contract created with solidity that implemented the ERC20 token standards. The project has been deployed on the Base Goerli Testnet.
+Interact with the project using Basescan here: https://goerli.basescan.org/address/0x50d56722d3be98b00e5eae58fba4124d9dcac51c
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -120,10 +121,11 @@ You will need foundry to install the packages and run tests. You can find out mo
 
 - [x] Basic NFT ERC7211 Contract
   - [x] Storage on IPFS
-- [ ] Abstract NFT ERC7211 Contract
+- [x] Abstract NFT ERC7211 Contract
   - [x] Storage on-chain
   - [x] Token URI changes on transaction call
-  - [ ] Tests
+  - [x] Tests
+  - [x] Deployed: 0x50D56722D3bE98b00E5EAe58fbA4124d9dcac51c on Base Goerli
 
 See the [open issues](https://github.com/achoudhury4927/foundry-adil-erc721/issues) for a full list of proposed features (and known issues).
 
